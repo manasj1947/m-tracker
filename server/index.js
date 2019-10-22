@@ -1,16 +1,29 @@
-const express = require('express')
-const app = express()
-const port = 3000
+//
+// launch app in a server
+//
 
-app.post('/', (req, res, next) => {
-  console.log('middleware1 is executed', req.headers.name);
-  res.send({ name: req.headers.name })
-  next()
-})
+// app config
+import 'dotenv/config';
 
-app.get('/greet', (req, res, next) => {
-  res.sendStatus(404)
-  next()
-})
+var blueTokaiConfig = require('./config');
+var btcAllowedOrigins = blueTokaiConfig.ALLOWED_ORIGINS;
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+// app object
+const app = require('./app');
+
+var logger = require('./logger');
+
+//
+// Start the server
+//
+
+var bindport = blueTokaiConfig.app.bind_port;
+var bindaddr = blueTokaiConfig.app.bind_addr;
+
+app.listen(bindport, bindaddr, function () {
+  logger.info('Welcome to the blue tokai Backend');
+  logger.info('  Listening on ' + bindaddr + ':' + bindport);
+  logger.info("  Allowed Origins: " + JSON.stringify(btcAllowedOrigins));
+});
+
+module.exports = app;
